@@ -87,7 +87,6 @@ class DockerAssetsGenerator
         $dev[] = 'COPY docker/php/dev.ini /usr/local/etc/php/conf.d/dev.ini';
         $dev[] = 'COPY docker/frankenphp/Caddyfile /etc/caddy/Caddyfile';
         $dev[] = 'EXPOSE 80';
-        $dev[] = 'CMD ["php", "-v"]';
         $stable = [];
         $stable[] = 'FROM ' . $base . ' AS stable';
         $stable[] = 'WORKDIR /app';
@@ -98,7 +97,6 @@ class DockerAssetsGenerator
         $stable[] = 'COPY docker/php/prod.ini /usr/local/etc/php/conf.d/prod.ini';
         $stable[] = 'COPY docker/frankenphp/Caddyfile /etc/caddy/Caddyfile';
         $stable[] = 'EXPOSE 80';
-        $stable[] = 'CMD ["php", "-v"]';
         return implode("\n", array_merge($builder, [''], $dev, [''], $stable)) . "\n";
     }
 

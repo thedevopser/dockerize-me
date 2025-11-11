@@ -44,7 +44,7 @@ Generated files
 Dev up
 
 ```
-docker compose -f docker/compose.yml up --build
+docker compose -f docker/compose.yml up -d
 ```
 
 Contributing
@@ -93,7 +93,7 @@ Fichiers générés
 Démarrer le dev
 
 ```
-docker compose -f docker/compose.yml up --build
+docker compose -f docker/compose.yml up -d
 ```
 
 Contribuer
