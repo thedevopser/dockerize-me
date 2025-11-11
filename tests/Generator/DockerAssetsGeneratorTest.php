@@ -21,7 +21,7 @@ class DockerAssetsGeneratorTest extends TestCase
         $this->assertArrayHasKey('docker/compose.yml', $files);
         $this->assertArrayHasKey('docker/php/dev.ini', $files);
         $this->assertArrayHasKey('docker/php/prod.ini', $files);
-        $this->assertArrayHasKey('docker/Caddyfile', $files);
+        $this->assertArrayHasKey('docker/frankenphp/Caddyfile', $files);
         $dockerfile = $files['docker/Dockerfile'] ?? null;
         $compose = $files['docker/compose.yml'] ?? null;
         $this->assertIsString($dockerfile);
@@ -63,7 +63,7 @@ class DockerAssetsGeneratorTest extends TestCase
         ]);
         $dockerfile = $files['docker/Dockerfile'] ?? null;
         $this->assertIsString($dockerfile);
-        $this->assertStringContainsString('dunglas/frankenphp:1-php8.4', $dockerfile);
+        $this->assertStringContainsString('dunglas/frankenphp:1-php8.4-alpine', $dockerfile);
     }
 
     public function testWriteCreatesDirectories(): void
