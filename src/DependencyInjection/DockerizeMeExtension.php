@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Thedevopser\DockerizeMe\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
@@ -17,6 +19,7 @@ class DockerizeMeExtension extends Extension
         $loader = new PhpFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
         $loader->load('services.php');
     }
+    #[\Override]
     public function getAlias(): string
     {
         return 'dockerize_me';

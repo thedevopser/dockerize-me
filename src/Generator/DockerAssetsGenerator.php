@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Thedevopser\DockerizeMe\Generator;
 
 /**
@@ -35,7 +37,7 @@ class DockerAssetsGenerator
         $files['docker/compose.yml'] = $this->compose($httpPort, $db, $addDbService);
         $files['docker/php/dev.ini'] = $this->phpIniDev();
         $files['docker/php/prod.ini'] = $this->phpIniProd();
-        $files['docker/Caddyfile'] = $this->caddyfile();
+        $files['docker/frankenphp/Caddyfile'] = $this->caddyfile();
         return $files;
     }
 
@@ -62,10 +64,11 @@ class DockerAssetsGenerator
      * @param string $phpVersion
      * @param list<string> $extensions
      * @param string $db
+     * @return string
      */
     private function dockerfile(string $phpVersion, array $extensions, string $db): string
     {
-        $base = 'dunglas/frankenphp:1-php' . $phpVersion;
+        $base = 'dunglas/frankenphp:1-php' . $phpVersion . '-alpine';
         $builder = [];
         $builder[] = 'FROM ' . $base . ' AS builder';
         $builder[] = 'WORKDIR /app';
@@ -82,7 +85,7 @@ class DockerAssetsGenerator
         $dev[] = 'RUN install-php-extensions xdebug';
         $dev[] = 'ENV XDEBUG_MODE=develop,debug';
         $dev[] = 'COPY docker/php/dev.ini /usr/local/etc/php/conf.d/dev.ini';
-        $dev[] = 'COPY docker/Caddyfile /etc/caddy/Caddyfile';
+        $dev[] = 'COPY docker/frankenphp/Caddyfile /etc/caddy/Caddyfile';
         $dev[] = 'EXPOSE 80';
         $dev[] = 'CMD ["php", "-v"]';
         $stable = [];
@@ -93,7 +96,7 @@ class DockerAssetsGenerator
             $stable[] = 'RUN install-php-extensions ' . implode(' ', array_unique($exts));
         }
         $stable[] = 'COPY docker/php/prod.ini /usr/local/etc/php/conf.d/prod.ini';
-        $stable[] = 'COPY docker/Caddyfile /etc/caddy/Caddyfile';
+        $stable[] = 'COPY docker/frankenphp/Caddyfile /etc/caddy/Caddyfile';
         $stable[] = 'EXPOSE 80';
         $stable[] = 'CMD ["php", "-v"]';
         return implode("\n", array_merge($builder, [''], $dev, [''], $stable)) . "\n";
@@ -103,6 +106,7 @@ class DockerAssetsGenerator
      * @param string $httpPort
      * @param string $db
      * @param bool $addDbService
+     * @return string
      */
     private function compose(string $httpPort, string $db, bool $addDbService): string
     {
@@ -169,14 +173,14 @@ class DockerAssetsGenerator
     private function caddyfile(): string
     {
         return implode("\n", [
-            ':80',
-            '',
-            'root * /app/public',
-            'php_server',
-            'route {',
-            'try_files {path} {path}/ /index.php?{query}',
-            '}',
-            'encode zstd gzip'
+            ':80 {',
+            '  root * /app/public',
+            '  php_server',
+            '  route {',
+            '    try_files {path} {path}/ /index.php?{query}',
+            '  }',
+            '  encode zstd gzip',
+            '}'
         ]) . "\n";
     }
 
