@@ -1,0 +1,13 @@
+/.github            export-ignore
+/.githooks          export-ignore
+/tests              export-ignore
+/phpstan.neon.dist  export-ignore
+/phpunit.xml.dist   export-ignore
+/Makefile           export-ignore
+/.editorconfig      export-ignore
+/.gitignore         export-ignore
+/.phpstan           export-ignore
+/.phpunit.cache     export-ignore
+/.idea              export-ignore
+/.vscode            export-ignore
+ /CONTRIBUTING.md    export-ignore
