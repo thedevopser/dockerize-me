@@ -86,7 +86,6 @@ class DockerAssetsGenerator
         $dev[] = 'ENV XDEBUG_MODE=develop,debug';
         $dev[] = 'COPY docker/php/dev.ini /usr/local/etc/php/conf.d/dev.ini';
         $dev[] = 'COPY docker/frankenphp/Caddyfile /etc/caddy/Caddyfile';
-        $dev[] = 'EXPOSE 80';
         $stable = [];
         $stable[] = 'FROM ' . $base . ' AS stable';
         $stable[] = 'WORKDIR /app';
@@ -96,7 +95,6 @@ class DockerAssetsGenerator
         }
         $stable[] = 'COPY docker/php/prod.ini /usr/local/etc/php/conf.d/prod.ini';
         $stable[] = 'COPY docker/frankenphp/Caddyfile /etc/caddy/Caddyfile';
-        $stable[] = 'EXPOSE 80';
         return implode("\n", array_merge($builder, [''], $dev, [''], $stable)) . "\n";
     }
 
@@ -115,6 +113,9 @@ class DockerAssetsGenerator
         $services[] = '      context: ..';
         $services[] = '      dockerfile: docker/Dockerfile';
         $services[] = '      target: dev';
+        // Set environment variables required by FrankenPHP/Caddy
+        $services[] = '    environment:';
+        $services[] = '      SERVER_NAME: :80';
         $services[] = '    volumes:';
         $services[] = '      - ../:/app';
         $services[] = '    ports:';
@@ -171,13 +172,32 @@ class DockerAssetsGenerator
     private function caddyfile(): string
     {
         return implode("\n", [
+            '{',
+            '    # Global options',
+            '    auto_https off',
+            '    admin off',
+            '}',
+            '',
             ':80 {',
-            '  root * /app/public',
-            '  php_server',
-            '  route {',
-            '    try_files {path} {path}/ /index.php?{query}',
-            '  }',
-            '  encode zstd gzip',
+            '    # FrankenPHP configuration',
+            '    root /app/public',
+            '',
+            '    # Enable compression',
+            '    encode zstd gzip',
+            '',
+            '    # Handle PHP files with FrankenPHP',
+            '    php_server',
+            '',
+            '    # Try files directive for Symfony routing',
+            '    try_files {path} {path}/index.php /index.php',
+            '',
+            '    # Serve static files directly',
+            '    file_server',
+            '',
+            '    # Log in JSON format',
+            '    log {',
+            '            format json',
+            '    }',
             '}'
         ]) . "\n";
     }
