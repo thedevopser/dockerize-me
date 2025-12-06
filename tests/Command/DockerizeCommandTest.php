@@ -12,7 +12,7 @@ class DockerizeCommandTest extends TestCase
     public function testCommandGeneratesFiles(): void
     {
         $app = new Application();
-        $app->add(new DockerizeCommand());
+        $app->addCommand(new DockerizeCommand());
         $command = $app->find('dockerize:me');
         $tester = new CommandTester($command);
         $dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'dockcmd_' . bin2hex(random_bytes(4));
