@@ -3,14 +3,14 @@
     "description": "A simple Symfony bundle to dockerize easly and quickly a Symfony application",
     "type": "symfony-bundle",
     "require": {
-        "symfony/console": "^7.3",
-        "symfony/http-kernel": "^7.3",
-        "symfony/dependency-injection": "^7.3",
-        "symfony/framework-bundle": "^7.3"
+        "symfony/console": "^7.4 | ^8.0",
+        "symfony/http-kernel": "^7.4 | ^8.0",
+        "symfony/dependency-injection": "^7.4 | ^8.0",
+        "symfony/framework-bundle": "^7.4 | ^8.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^12.4",
-        "symfony/phpunit-bridge": "^7.3"
+        "symfony/phpunit-bridge": "^7.3 | ^8.0"
     },
     "license": "MIT",
     "autoload": {
